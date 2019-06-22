@@ -88,7 +88,14 @@
             <a href="application/rookie/show.do?applicationId=${row.id}">
                 <spring:message code="application.show"/></a>
         </display:column>
+        
+        <spring:message code="application.xxxxx" var="show"/>
+        <display:column title="${show}">
+            <a href="xxxxx/rookie/list.do?applicationId=${row.id}">
+                <spring:message code="application.xxxxx"/></a>
+        </display:column>
     </display:table>
+    
 
     <acme:cancel code="position.goBack" url="/"/>
 </security:authorize>
@@ -153,6 +160,12 @@
         <display:column title="${curricula}">
             <a href="curricula/company/display.do?curriculaId=${row.curricula.id}">
                 <spring:message code="application.curricula"/></a>
+        </display:column>
+        
+        <spring:message code="application.xxxxx" var="show"/>
+        <display:column title="${show}">
+            <a href="xxxxx/rookie/list.do?applicationId=${row.id}">
+                <spring:message code="application.xxxxx"/></a>
         </display:column>
 
         <spring:message code="application.accept" var="applicationAccept"/>

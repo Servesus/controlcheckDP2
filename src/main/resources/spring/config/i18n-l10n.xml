@@ -40,6 +40,7 @@
 		<value>/views/provider/messages</value>
 		<value>/views/sponsorship/messages</value>
 		<value>/views/auditor/messages</value>
+		<value>/views/xxxxx/messages</value>
 	</util:list>
 
 </beans>

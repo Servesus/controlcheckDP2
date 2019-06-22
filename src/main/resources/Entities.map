@@ -1,12 +1,5 @@
 #./src/main/resources/Entities.map
-<<<<<<< HEAD
-#Wed May 15 20:26:38 CEST 2019
-configuration1=8
-admin1=6
-userAccount1=5
-socialProfileAdmin1=7
-=======
-#Wed May 15 19:30:52 CEST 2019
+#Sat Jun 22 19:39:38 CEST 2019
 application4=845
 personalDataRookie2Copy3=812
 application3=844
@@ -80,4 +73,3 @@ auditor3=821
 curricula2Rookie1=803
 auditor2=820
 auditor1=819
->>>>>>> e86fc81df32ab195d99b82d3b4506c426977dc00
