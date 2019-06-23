@@ -1,22 +1,32 @@
 
 package services;
 
-import domain.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import javax.transaction.Transactional;
+import javax.validation.ValidationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+
 import repositories.ApplicationRepository;
 import security.LoginService;
 import security.UserAccount;
-
-import javax.transaction.Transactional;
-import javax.validation.ValidationException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import domain.Actor;
+import domain.Application;
+import domain.Company;
+import domain.Message;
+import domain.Position;
+import domain.Problem;
+import domain.Rookie;
+import domain.Sponsorship;
+import domain.XXXXX;
 
 @Service
 @Transactional
@@ -38,16 +48,19 @@ public class ApplicationService {
 	private PositionService			positionService;
 
 	@Autowired
-	private CurriculaService 		curriculaService;
+	private CurriculaService		curriculaService;
 
 	@Autowired
-	private MessageService	 		messageService;
+	private MessageService			messageService;
 
 	@Autowired
-	private SponsorshipService	 		sponsorshipService;
+	private SponsorshipService		sponsorshipService;
 
 	@Autowired
 	private Validator				validator;
+
+	@Autowired
+	private XXXXXService			xxxxxService;
 
 
 	public Application reconstruct(final Application application, final BindingResult binding) {
@@ -56,8 +69,8 @@ public class ApplicationService {
 		result = this.applicationRepository.findOne(application.getId());
 		result.setExplanation(application.getExplanation());
 		result.setLink(application.getLink());
-		validator.validate(result,binding);
-		if(binding.hasErrors())
+		this.validator.validate(result, binding);
+		if (binding.hasErrors())
 			throw new ValidationException();
 
 		return result;
@@ -65,19 +78,19 @@ public class ApplicationService {
 
 	public Application reconstructReject(final Application application, final BindingResult binding) {
 		Application result;
-			result = this.applicationRepository.findOne(application.getId());
-			application.setStatus(result.getStatus());
-			application.setSubmitMoment(result.getSubmitMoment());
-			application.setVersion(result.getVersion());
-			application.setCurricula(result.getCurricula());
-			application.setExplanation(result.getExplanation());
-			application.setLink(result.getLink());
-			application.setProblem(result.getProblem());
-			application.setRookie(result.getRookie());
-			application.setMoment(result.getMoment());
-			application.setRejectComment(application.getRejectComment());
-			this.validator.validate(application, binding);
-			result = application;
+		result = this.applicationRepository.findOne(application.getId());
+		application.setStatus(result.getStatus());
+		application.setSubmitMoment(result.getSubmitMoment());
+		application.setVersion(result.getVersion());
+		application.setCurricula(result.getCurricula());
+		application.setExplanation(result.getExplanation());
+		application.setLink(result.getLink());
+		application.setProblem(result.getProblem());
+		application.setRookie(result.getRookie());
+		application.setMoment(result.getMoment());
+		application.setRejectComment(application.getRejectComment());
+		this.validator.validate(application, binding);
+		result = application;
 		return result;
 	}
 
@@ -106,7 +119,7 @@ public class ApplicationService {
 
 		return applications;
 	}
-	public Application saveCompany(Application application){
+	public Application saveCompany(final Application application) {
 		Assert.notNull(application);
 		Assert.isTrue(this.actorService.getActorLogged().getUserAccount().getAuthorities().iterator().next().getAuthority().equals("COMPANY"));
 
@@ -127,19 +140,19 @@ public class ApplicationService {
 		Assert.isTrue(userAccount.getAuthorities().iterator().next().getAuthority().equals("COMPANY"));
 		Assert.isTrue(application.getStatus().equals("SUBMITTED"));
 		Assert.isTrue(applications.contains(application));
-		Position position = this.getPositionByApplication(application.getId());
+		final Position position = this.getPositionByApplication(application.getId());
 		Assert.isTrue(!position.getIsCancelled());
 		application.setStatus("ACCEPTED");
 
-		Message msg = this.messageService.create();
+		final Message msg = this.messageService.create();
 		msg.setRecipient(application.getRookie());
 		msg.setSubject("An application has changed its status.");
 		msg.setBody("The application for the position has changed its status to ACCEPTED");
 		msg.getTags().add("NOTIFICATION");
- 		this.messageService.save(msg);
+		this.messageService.save(msg);
 
 		final Collection<Sponsorship> sponsorships = this.sponsorshipService.findAllByPosition(position.getId());
-		for(Sponsorship s : sponsorships)
+		for (final Sponsorship s : sponsorships)
 			this.sponsorshipService.deleteForced(s);
 
 	}
@@ -155,11 +168,11 @@ public class ApplicationService {
 		Assert.isTrue(application.getStatus().equals("SUBMITTED"));
 		Assert.isTrue(applications.contains(application));
 		Assert.isTrue(!application.getRejectComment().equals(""));
-		Position position = this.getPositionByApplication(application.getId());
+		final Position position = this.getPositionByApplication(application.getId());
 		Assert.isTrue(!position.getIsCancelled());
 		application.setStatus("REJECTED");
 
-		Message msg = this.messageService.create();
+		final Message msg = this.messageService.create();
 		msg.setRecipient(application.getRookie());
 		msg.setSubject("An application has changed its status.");
 		msg.setBody("The application for the position has changed its status to REJECTED");
@@ -185,16 +198,16 @@ public class ApplicationService {
 		return applications;
 	}
 
-	public Collection<Application> getApplicationsByPosition(int positionId){
+	public Collection<Application> getApplicationsByPosition(final int positionId) {
 		Assert.notNull(positionId);
 		Collection<Application> applications;
 
-		applications = applicationRepository.getApplicationsByPosition(positionId);
+		applications = this.applicationRepository.getApplicationsByPosition(positionId);
 
 		return applications;
 	}
 
-	public Collection<Application> getAllApplicationsByPosition(int positionId){
+	public Collection<Application> getAllApplicationsByPosition(final int positionId) {
 
 		Collection<Application> applications;
 
@@ -203,42 +216,44 @@ public class ApplicationService {
 		return applications;
 	}
 
-	public Position getPositionByApplication(int applicationId){
+	public Position getPositionByApplication(final int applicationId) {
 		Assert.notNull(applicationId);
 
-		Position position = this.applicationRepository.getPositionByApplication(applicationId);
+		final Position position = this.applicationRepository.getPositionByApplication(applicationId);
 
 		return position;
 	}
 
-	public void delete(Application application){
+	public void delete(final Application application) {
 		Assert.notNull(application);
+		final Collection<XXXXX> c = this.xxxxxService.getXXXXXs(application.getId());
+		for (final XXXXX x : c)
+			this.xxxxxService.delete2(x);
 		this.applicationRepository.delete(application);
 	}
 
 	//PARTE DEL ROOKIE--------------------------------------------------------------------------------------------------
 
-	public Application saveRookie(Application application, int positionId) {
+	public Application saveRookie(final Application application, final int positionId) {
 		Application result;
 		Assert.notNull(application);
-		Assert.isTrue(application.getId()==0);
+		Assert.isTrue(application.getId() == 0);
 		Assert.notNull(positionId);
-		Position p = this.positionService.findOne(positionId);
+		final Position p = this.positionService.findOne(positionId);
 		Assert.notNull(p);
-		Assert.isTrue(p.getIsFinal()==true && p.getIsCancelled() == false);
+		Assert.isTrue(p.getIsFinal() == true && p.getIsCancelled() == false);
 
-
-		Actor a = this.actorService.getActorLogged();
-		Rookie h = this.rookieService.findOne(a.getId());
+		final Actor a = this.actorService.getActorLogged();
+		final Rookie h = this.rookieService.findOne(a.getId());
 		Assert.notNull(h);
 
 		application.setRookie(h);
 		application.setMoment(new Date());
 		application.setStatus("PENDING");
 		application.setCurricula(this.curriculaService.copy(application.getCurricula()));
-		List<Problem> problems = (List<Problem>) p.getProblems();
-		Random random = new Random();
-		int valorRandom = random.nextInt(problems.size());
+		final List<Problem> problems = (List<Problem>) p.getProblems();
+		final Random random = new Random();
+		final int valorRandom = random.nextInt(problems.size());
 		application.setProblem(problems.get(valorRandom));
 
 		result = this.applicationRepository.save(application);

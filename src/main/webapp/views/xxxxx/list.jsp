@@ -54,7 +54,7 @@
 	</jstl:if>
 	<jstl:if test="${lang=='en'}">
 	<spring:message code="xxxxx.moment" var="columnTitle"/>
-	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy-MM-dd HH:mm}" />
+	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy/MM/dd HH:mm}" />
 	</jstl:if>
 	<display:column class="${css }" property="ticker" title="Ticker"/>
 </display:table>
@@ -92,13 +92,10 @@
 	</jstl:if>
 	<jstl:if test="${lang=='en'}">
 	<spring:message code="xxxxx.moment" var="columnTitle"/>
-	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy-MM-dd HH:mm}" />
+	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy/MM/dd HH:mm}" />
 	</jstl:if>
 	<display:column class="${css }" property="ticker" title="Ticker"/>
 </display:table>
 
-<input type="button" name="create"
-		value="<spring:message code="xxxxx.create" />"
-		onclick="javascript: relativeRedir('xxxxx/rookie/create.do?applicationId=${applicationId}');" />
 
 </security:authorize>

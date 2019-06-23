@@ -84,7 +84,12 @@ public class XXXXXService {
 	public void delete(final XXXXX object) {
 		Assert.notNull(object);
 		Assert.isTrue(object.getIsFinal() == false);
+		Assert.isTrue(this.rookieService.findOne(this.actorService.getActorLogged().getId()).equals(object.getApplication().getRookie()));
 		this.repository.delete(object);
+	}
+
+	public void delete2(final XXXXX x) {
+		this.repository.delete(x);
 	}
 
 	public static String generadorDeTickers() {

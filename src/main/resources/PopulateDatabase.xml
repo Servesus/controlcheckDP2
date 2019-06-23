@@ -1206,16 +1206,7 @@
 		<property name = "curricula" ref="curriculaRookie2Copy2"/>
 	</bean>
 
-	<bean id="application4" class ="domain.Application">
-		<property name = "moment" value = "14/04/2019 13:00"/>
-		<property name = "explanation" value = ""/>
-		<property name = "link" value = ""/>
-		<property name = "status" value="PENDING"/>
-		<property name = "rejectComment" value=""/>
-		<property name = "rookie" ref="rookie2"/>
-		<property name = "problem" ref ="problem1"/>
-		<property name = "curricula" ref="curriculaRookie2Copy3"/>
-	</bean>
+
 
 	<!-- Configuration -->
 
