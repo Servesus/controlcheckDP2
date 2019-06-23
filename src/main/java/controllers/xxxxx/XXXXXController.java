@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.ActorService;
 import services.ApplicationService;
+import services.CompanyService;
 import services.RookieService;
 import services.XXXXXService;
 import controllers.AbstractController;
@@ -43,24 +44,33 @@ public class XXXXXController extends AbstractController {
 	@Autowired
 	private RookieService		rookieService;
 
+	@Autowired
+	private CompanyService		companyService;
+
 
 	@RequestMapping(value = "/rookie,company/list", method = RequestMethod.GET)
 	public ModelAndView list(@RequestParam final int applicationId) {
 		ModelAndView result;
-		Collection<XXXXX> x;
-		final String language = LocaleContextHolder.getLocale().getLanguage();
+		try {
+			Collection<XXXXX> x;
+			final String language = LocaleContextHolder.getLocale().getLanguage();
 
-		x = this.service.getXXXXXs(applicationId);
+			x = this.service.getXXXXXs(applicationId);
+			final Application a = this.applicationService.findOne(applicationId);
+			Assert.isTrue(a.getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())) || a.getProblem().getCompany().equals(this.companyService.findOne(this.actorService.getActorLogged().getId())));
 
-		final Date haceUnMes = this.restarMesesFecha(new Date(), 1);
-		final Date haceDosMeses = this.restarMesesFecha(new Date(), 2);
-		result = new ModelAndView("xxxxx/rookie,company/list");
-		result.addObject("xxxxx", x);
-		result.addObject("requestURI", "xxxxx/rookie,company/list.do");
-		result.addObject("lang", language);
-		result.addObject("applicationId", applicationId);
-		result.addObject("haceUnMes", haceUnMes);
-		result.addObject("haceDosMeses", haceDosMeses);
+			final Date haceUnMes = this.restarMesesFecha(new Date(), 1);
+			final Date haceDosMeses = this.restarMesesFecha(new Date(), 2);
+			result = new ModelAndView("xxxxx/rookie,company/list");
+			result.addObject("xxxxx", x);
+			result.addObject("requestURI", "xxxxx/rookie,company/list.do");
+			result.addObject("lang", language);
+			result.addObject("applicationId", applicationId);
+			result.addObject("haceUnMes", haceUnMes);
+			result.addObject("haceDosMeses", haceDosMeses);
+		} catch (final Throwable oops) {
+			result = new ModelAndView("redirect:/");
+		}
 
 		return result;
 
@@ -68,23 +78,33 @@ public class XXXXXController extends AbstractController {
 	@RequestMapping(value = "/rookie/create", method = RequestMethod.GET)
 	public ModelAndView create(@RequestParam final int applicationId) {
 		ModelAndView result;
-		final XXXXX x = this.service.create();
-		result = this.createEditModelAndView(x);
-		result.addObject("applicationId", applicationId);
+		try {
+			final XXXXX x = this.service.create();
+			result = this.createEditModelAndView(x);
+			result.addObject("applicationId", applicationId);
+		} catch (final Throwable oops) {
+			result = new ModelAndView("redirect:/");
+		}
+
 		return result;
 	}
 
 	@RequestMapping(value = "/rookie/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam final int xxxxxId) {
 		ModelAndView result;
-		XXXXX x;
+		try {
+			XXXXX x;
 
-		x = this.service.findOne(xxxxxId);
+			x = this.service.findOne(xxxxxId);
 
-		Assert.isTrue(x.getApplication().getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())));
-		Assert.isTrue(x.getIsFinal() == false);
-		result = this.createEditModelAndView(x);
-		result.addObject("applicationId", x.getApplication().getId());
+			Assert.isTrue(x.getApplication().getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())));
+			Assert.isTrue(x.getIsFinal() == false);
+			result = this.createEditModelAndView(x);
+			result.addObject("applicationId", x.getApplication().getId());
+		} catch (final Throwable oops) {
+			result = new ModelAndView("redirect:/");
+		}
+
 		return result;
 	}
 
@@ -167,22 +187,29 @@ public class XXXXXController extends AbstractController {
 	@RequestMapping(value = "/rookie,company/show", method = RequestMethod.GET)
 	public ModelAndView show(@RequestParam final int xxxxxId) {
 		ModelAndView result;
-		final XXXXX x = this.service.findOne(xxxxxId);
-		if (x == null)
-			result = new ModelAndView("redirect:/");
-		final String language = LocaleContextHolder.getLocale().getLanguage();
-		final SimpleDateFormat formatterEs = new SimpleDateFormat("dd-MM-yy HH:mm");
-		final SimpleDateFormat formatterEn = new SimpleDateFormat("yy-MM-dd HH:mm");
-		String moment;
-		if (language == "es")
-			moment = formatterEs.format(x.getMoment());
-		else
-			moment = formatterEn.format(x.getMoment());
+		try {
+			final XXXXX x = this.service.findOne(xxxxxId);
+			if (x == null)
+				result = new ModelAndView("redirect:/");
+			final Application a = x.getApplication();
+			Assert.isTrue(a.getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())) || a.getProblem().getCompany().equals(this.companyService.findOne(this.actorService.getActorLogged().getId())));
+			final String language = LocaleContextHolder.getLocale().getLanguage();
+			final SimpleDateFormat formatterEs = new SimpleDateFormat("dd-MM-yy HH:mm");
+			final SimpleDateFormat formatterEn = new SimpleDateFormat("yy-MM-dd HH:mm");
+			String moment;
+			if (language == "es")
+				moment = formatterEs.format(x.getMoment());
+			else
+				moment = formatterEn.format(x.getMoment());
 
-		result = new ModelAndView("xxxxx/rookie,company/show");
-		result.addObject("body", x.getBody());
-		result.addObject("picture", x.getPicture());
-		result.addObject("moment", moment);
+			result = new ModelAndView("xxxxx/rookie,company/show");
+			result.addObject("body", x.getBody());
+			result.addObject("picture", x.getPicture());
+			result.addObject("moment", moment);
+		} catch (final Throwable oops) {
+			result = new ModelAndView("redirect:/");
+		}
+
 		return result;
 
 	}
