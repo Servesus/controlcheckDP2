@@ -103,8 +103,8 @@
         <security:intercept-url pattern="/sponsorship/provider/show.do" access="hasRole('PROVIDER')"/>
         <security:intercept-url pattern="/sponsorship/provider/delete.do" access="hasRole('PROVIDER')"/>
         
-         <security:intercept-url pattern="/xxxxx/rookie/**" access="hasRole('ROOKIE')"/>
-
+         <security:intercept-url pattern="/xxxxx/rookie,company/**" access="hasAnyRole('ROOKIE','COMPANY')"/>
+		<security:intercept-url pattern="/xxxxx/rookie/**" access="hasRole('ROOKIE')"/>
         <security:intercept-url pattern="/gdpr/**" access="permitAll"/>
 
         <security:intercept-url pattern="/**" access="permitAll"/>

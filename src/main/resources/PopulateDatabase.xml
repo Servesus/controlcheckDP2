@@ -1244,5 +1244,41 @@
 			</list>
 		</property>
 	</bean>
+	
+	<!-- XXXs -->
+	<bean id="xxx1TEST" class="domain.XXXXX">
+		<property name="ticker" value="BBVA-9541"/>
+		<property name= "body" value="Test" />
+		<property name= "picture" value="http://www.picture1Test.com" />
+		<property name= "isFinal" value="false" />
+		<property name="application" ref="application1"/>
+	</bean>
+	
+	<bean id="xxx2TEST" class="domain.XXXXX">
+		<property name="ticker" value="BBVA-9542"/>
+		<property name="moment" value = "2019/05/05"/> 
+		<property name= "body" value="Test" />
+		<property name= "picture" value="http://www.picture2Test.com" />
+		<property name= "isFinal" value="true" />
+		<property name="application" ref="application1"/>
+	</bean>
+	
+	<bean id="xxx3TEST" class="domain.XXXXX">
+		<property name="ticker" value="BBVA-9543"/>
+		<property name="moment" value = "2019/02/20"/> 
+		<property name= "body" value="Test" />
+		<property name= "picture" value="http://www.picture3Test.com" />
+		<property name= "isFinal" value="true" />
+		<property name="application" ref="application1"/>
+	</bean>
+	
+	<bean id="xxx4TEST" class="domain.XXXXX">
+		<property name="ticker" value="BBVA-9544"/>
+		<property name="moment" value = "2019/01/20"/> 
+		<property name= "body" value="Test" />
+		<property name= "picture" value="http://www.picture4Test.com" />
+		<property name= "isFinal" value="true" />
+		<property name="application" ref="application1"/>
+	</bean>
 
 </beans>

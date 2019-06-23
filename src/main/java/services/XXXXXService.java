@@ -71,6 +71,7 @@ public class XXXXXService {
 	public XXXXX save(final XXXXX object) {
 		Assert.notNull(object);
 		Assert.isTrue(object.getApplication().getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())));
+		Assert.isTrue(object.getApplication().getStatus().equals("SUBMITTED"));
 		if (object.getIsFinal() == true)
 			object.setMoment(new Date());
 

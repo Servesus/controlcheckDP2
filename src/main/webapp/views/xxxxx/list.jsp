@@ -11,13 +11,13 @@
 
 <style type="text/css">
 .GREEN{
-  background-color: powderblue;
+  background-color: Indigo;
 }
 .ORANGE{
-  background-color: coral;
+  background-color: DarkSlateGray;
 }
 .RED{
-  background-color: lightslategrey;
+  background-color: PapayaWhip;
 }
 </style>
 
@@ -44,7 +44,45 @@
 	</jstl:if>
 	</display:column>
 	<display:column class="${css }">
-		<a href="xxxxx/rookie/show.do?xxxxxId=${row.id}">
+		<a href="xxxxx/rookie,company/show.do?xxxxxId=${row.id}">
+			<spring:message code="xxxxx.view"/> ${month }
+		</a>
+	</display:column>
+	<jstl:if test="${lang=='es'}">
+	<spring:message code="xxxxx.moment" var="columnTitle"/>
+	<display:column  class="${css }" property="moment" title="${columnTitle}" format="{0,date,dd-MM-yy HH:mm}" />
+	</jstl:if>
+	<jstl:if test="${lang=='en'}">
+	<spring:message code="xxxxx.moment" var="columnTitle"/>
+	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy-MM-dd HH:mm}" />
+	</jstl:if>
+	<display:column class="${css }" property="ticker" title="Ticker"/>
+</display:table>
+
+<input type="button" name="create"
+		value="<spring:message code="xxxxx.create" />"
+		onclick="javascript: relativeRedir('xxxxx/rookie/create.do?applicationId=${applicationId}');" />
+
+</security:authorize>
+
+<security:authorize access="hasRole('COMPANY')">
+<display:table name="xxxxx" id="row" requestURI="${requestURI}" pagesize="5" class="displaytag">
+
+	<jstl:choose>
+		<jstl:when test="${row.moment > haceUnMes }">
+			<jstl:set var="css" value="GREEN"/>
+		</jstl:when>
+		<jstl:when test="${row.moment < haceUnMes && row.moment>haceDosMeses}">
+			<jstl:set var="css" value="ORANGE"/>
+		</jstl:when>
+		<jstl:otherwise>
+			<jstl:set var="css" value="RED" />
+		</jstl:otherwise>
+	</jstl:choose>
+	
+
+	<display:column class="${css }">
+		<a href="xxxxx/rookie,company/show.do?xxxxxId=${row.id}">
 			<spring:message code="xxxxx.view"/> ${month }
 		</a>
 	</display:column>

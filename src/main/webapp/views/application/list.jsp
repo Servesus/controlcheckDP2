@@ -91,7 +91,7 @@
         
         <spring:message code="application.xxxxx" var="show"/>
         <display:column title="${show}">
-            <a href="xxxxx/rookie/list.do?applicationId=${row.id}">
+            <a href="xxxxx/rookie,company/list.do?applicationId=${row.id}">
                 <spring:message code="application.xxxxx"/></a>
         </display:column>
     </display:table>
@@ -164,7 +164,7 @@
         
         <spring:message code="application.xxxxx" var="show"/>
         <display:column title="${show}">
-            <a href="xxxxx/rookie/list.do?applicationId=${row.id}">
+            <a href="xxxxx/rookie,company/list.do?applicationId=${row.id}">
                 <spring:message code="application.xxxxx"/></a>
         </display:column>
 

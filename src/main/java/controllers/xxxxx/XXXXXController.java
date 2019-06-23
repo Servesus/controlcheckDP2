@@ -28,7 +28,7 @@ import domain.Application;
 import domain.XXXXX;
 
 @Controller
-@RequestMapping("/xxxxx/rookie")
+@RequestMapping("/xxxxx")
 public class XXXXXController extends AbstractController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class XXXXXController extends AbstractController {
 	private RookieService		rookieService;
 
 
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/rookie,company/list", method = RequestMethod.GET)
 	public ModelAndView list(@RequestParam final int applicationId) {
 		ModelAndView result;
 		Collection<XXXXX> x;
@@ -54,9 +54,9 @@ public class XXXXXController extends AbstractController {
 
 		final Date haceUnMes = this.restarMesesFecha(new Date(), 1);
 		final Date haceDosMeses = this.restarMesesFecha(new Date(), 2);
-		result = new ModelAndView("xxxxx/rookie/list");
+		result = new ModelAndView("xxxxx/rookie,company/list");
 		result.addObject("xxxxx", x);
-		result.addObject("requestURI", "xxxxx/rookie/list.do");
+		result.addObject("requestURI", "xxxxx/rookie,company/list.do");
 		result.addObject("lang", language);
 		result.addObject("applicationId", applicationId);
 		result.addObject("haceUnMes", haceUnMes);
@@ -65,7 +65,7 @@ public class XXXXXController extends AbstractController {
 		return result;
 
 	}
-	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	@RequestMapping(value = "/rookie/create", method = RequestMethod.GET)
 	public ModelAndView create(@RequestParam final int applicationId) {
 		ModelAndView result;
 		final XXXXX x = this.service.create();
@@ -74,7 +74,7 @@ public class XXXXXController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/rookie/edit", method = RequestMethod.GET)
 	public ModelAndView edit(@RequestParam final int xxxxxId) {
 		ModelAndView result;
 		XXXXX x;
@@ -88,7 +88,7 @@ public class XXXXXController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "draft")
+	@RequestMapping(value = "/rookie/edit", method = RequestMethod.POST, params = "draft")
 	public ModelAndView saveDraft(@ModelAttribute("xxxxx") XXXXX x, final BindingResult binding, @RequestParam final int applicationId) {
 		ModelAndView result;
 		try {
@@ -101,7 +101,7 @@ public class XXXXXController extends AbstractController {
 			Assert.isTrue(x.getIsFinal() == false);
 			x.setIsFinal(false);
 			this.service.save(x);
-			result = new ModelAndView("redirect:list.do?applicationId=" + x.getApplication().getId());
+			result = new ModelAndView("redirect:/xxxxx/rookie,company/list.do?applicationId=" + x.getApplication().getId());
 		} catch (final ValidationException oops) {
 			result = this.createEditModelAndView(x);
 			result.addObject("applicationId", applicationId);
@@ -112,7 +112,7 @@ public class XXXXXController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "final")
+	@RequestMapping(value = "/rookie/edit", method = RequestMethod.POST, params = "final")
 	public ModelAndView saveFinal(@ModelAttribute("xxxxx") XXXXX x, final BindingResult binding, @RequestParam final int applicationId) {
 		ModelAndView result;
 		try {
@@ -125,7 +125,7 @@ public class XXXXXController extends AbstractController {
 			Assert.isTrue(x.getIsFinal() == false);
 			x.setIsFinal(true);
 			this.service.save(x);
-			result = new ModelAndView("redirect:list.do?applicationId=" + x.getApplication().getId());
+			result = new ModelAndView("redirect:/xxxxx/rookie,company/list.do?applicationId=" + x.getApplication().getId());
 		} catch (final ValidationException oops) {
 			result = this.createEditModelAndView(x);
 			result.addObject("applicationId", applicationId);
@@ -136,13 +136,13 @@ public class XXXXXController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "delete")
+	@RequestMapping(value = "/rookie/edit", method = RequestMethod.POST, params = "delete")
 	public ModelAndView delete(@ModelAttribute("xxxxx") XXXXX x, final BindingResult binding) {
 		ModelAndView result;
 		try {
 			x = this.service.reconstruct(x, binding);
 			this.service.delete(x);
-			result = new ModelAndView("redirect:list.do?applicationId=" + x.getApplication().getId());
+			result = new ModelAndView("redirect:/xxxxx/rookie,company/list.do?applicationId=" + x.getApplication().getId());
 		} catch (final Throwable oops) {
 			result = this.createEditModelAndView(x, "xxxxx.commit.error");
 		}
@@ -164,7 +164,7 @@ public class XXXXXController extends AbstractController {
 		return result;
 	}
 
-	@RequestMapping(value = "/show", method = RequestMethod.GET)
+	@RequestMapping(value = "/rookie,company/show", method = RequestMethod.GET)
 	public ModelAndView show(@RequestParam final int xxxxxId) {
 		ModelAndView result;
 		final XXXXX x = this.service.findOne(xxxxxId);
@@ -179,7 +179,7 @@ public class XXXXXController extends AbstractController {
 		else
 			moment = formatterEn.format(x.getMoment());
 
-		result = new ModelAndView("xxxxx/rookie/show");
+		result = new ModelAndView("xxxxx/rookie,company/show");
 		result.addObject("body", x.getBody());
 		result.addObject("picture", x.getPicture());
 		result.addObject("moment", moment);
