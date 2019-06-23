@@ -89,8 +89,8 @@
                 <spring:message code="application.show"/></a>
         </display:column>
         
-        <spring:message code="application.xxxxx" var="show"/>
-        <display:column title="${show}">
+        <spring:message code="application.xxxxx" var="show2"/>
+        <display:column title="${show2}">
             <a href="xxxxx/rookie,company/list.do?applicationId=${row.id}">
                 <spring:message code="application.xxxxx"/></a>
         </display:column>
@@ -161,6 +161,7 @@
             <a href="curricula/company/display.do?curriculaId=${row.curricula.id}">
                 <spring:message code="application.curricula"/></a>
         </display:column>
+        
         
         <spring:message code="application.xxxxx" var="show"/>
         <display:column title="${show}">

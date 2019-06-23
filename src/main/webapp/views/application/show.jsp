@@ -11,6 +11,18 @@
 <%@taglib prefix="display" uri="http://displaytag.sf.net" %>
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags" %>
 
+<style type="text/css">
+.GREEN{
+  background-color: Indigo;
+}
+.ORANGE{
+  background-color: DarkSlateGray;
+}
+.RED{
+  background-color: PapayaWhip;
+}
+</style>
+
 <security:authorize access="hasRole('ROOKIE')">
 
     <acme:showtext fieldset="true" code="position.ticker" value="${position.ticker}"/>
@@ -56,6 +68,38 @@
         <legend><spring:message code="application.problem"/></legend>
         <a href="problem/show.do?problemID=${application.problem.id}"><spring:message code="application.problem"/></a>
     </fieldset>
+    
+    <display:table name="xxxxx" id="row" requestURI="${requestURI}" pagesize="5" class="displaytag">
+
+	<jstl:choose>
+		<jstl:when test="${row.moment > haceUnMes }">
+			<jstl:set var="css" value="GREEN"/>
+		</jstl:when>
+		<jstl:when test="${row.moment < haceUnMes && row.moment>haceDosMeses}">
+			<jstl:set var="css" value="ORANGE"/>
+		</jstl:when>
+		<jstl:otherwise>
+			<jstl:set var="css" value="RED" />
+		</jstl:otherwise>
+	</jstl:choose>
+	
+
+	<display:column class="${css }">
+		<a href="xxxxx/rookie,company/show.do?xxxxxId=${row.id}">
+			<spring:message code="xxxxx.view"/> ${month }
+		</a>
+	</display:column>
+	<jstl:if test="${lang=='es'}">
+	<spring:message code="xxxxx.moment" var="columnTitle"/>
+	<display:column  class="${css }" property="moment" title="${columnTitle}" format="{0,date,dd-MM-yy HH:mm}" />
+	</jstl:if>
+	<jstl:if test="${lang=='en'}">
+	<spring:message code="xxxxx.moment" var="columnTitle"/>
+	<display:column class="${css }" property="moment" title="${columnTitle}" format="{0,date,yy/MM/dd HH:mm}" />
+	</jstl:if>
+	<display:column class="${css }" property="ticker" title="Ticker"/>
+</display:table>
+    
 
     <acme:cancel code="position.goBack" url="application/rookie/list.do"/>
 

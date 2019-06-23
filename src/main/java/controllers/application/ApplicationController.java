@@ -1,9 +1,15 @@
 
 package controllers.application;
 
-import controllers.AbstractController;
-import domain.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+
+import javax.validation.ValidationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -13,13 +19,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import security.LoginService;
-import services.*;
 
-import javax.validation.ValidationException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import security.LoginService;
+import services.ActorService;
+import services.ApplicationService;
+import services.CompanyService;
+import services.CurriculaService;
+import services.PositionService;
+import services.RookieService;
+import services.XXXXXService;
+import controllers.AbstractController;
+import domain.Actor;
+import domain.Application;
+import domain.Company;
+import domain.Position;
+import domain.Rookie;
+import domain.XXXXX;
 
 @Controller
 @RequestMapping("application")
@@ -43,6 +58,9 @@ public class ApplicationController extends AbstractController {
 	@Autowired
 	private CurriculaService	curriculaService;
 
+	@Autowired
+	private XXXXXService		xxxxxService;
+
 
 	@RequestMapping(value = "/rookie/list", method = RequestMethod.GET)
 	public ModelAndView list() {
@@ -54,8 +72,8 @@ public class ApplicationController extends AbstractController {
 		applications = this.applicationService.getApplicationsByRookie(rookie);
 
 		final HashMap<Integer, Position> appPosition = new HashMap<Integer, Position>();
-		for(Application a : applications)
-			appPosition.put(a.getId(),this.applicationService.getPositionByApplication(a.getId()));
+		for (final Application a : applications)
+			appPosition.put(a.getId(), this.applicationService.getPositionByApplication(a.getId()));
 
 		result = new ModelAndView("application/rookie/list");
 		result.addObject("applications", applications);
@@ -65,7 +83,7 @@ public class ApplicationController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/company/list", method = RequestMethod.GET)
-	public ModelAndView listCompany(@RequestParam int positionId) {
+	public ModelAndView listCompany(@RequestParam final int positionId) {
 		ModelAndView result;
 		Collection<Application> applications;
 
@@ -73,13 +91,13 @@ public class ApplicationController extends AbstractController {
 		final Company company = this.companyService.findOne(user.getId());
 
 		try {
-			Position position = positionService.findOne(positionId);
+			final Position position = this.positionService.findOne(positionId);
 			Assert.isTrue(position.getCompany().equals(company));
 			applications = this.applicationService.getApplicationsByPosition(positionId);
 			result = new ModelAndView("application/company/list");
 			result.addObject("applications", applications);
-			result.addObject("requestURI", "application/company/list.do?positionId="+positionId);
-		}catch (Throwable oops){
+			result.addObject("requestURI", "application/company/list.do?positionId=" + positionId);
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/position/company/list.do");
 		}
 		return result;
@@ -102,13 +120,19 @@ public class ApplicationController extends AbstractController {
 			result = new ModelAndView("application/rookie/show");
 			result.addObject("application", application);
 			result.addObject("position", position);
-		} catch (Throwable oops) {
+			final Collection<XXXXX> x = this.xxxxxService.getXXXXXsC(application.getId());
+			final Date haceUnMes = this.restarMesesFecha(new Date(), 1);
+			final Date haceDosMeses = this.restarMesesFecha(new Date(), 2);
+			result.addObject("xxxxx", x);
+			result.addObject("haceUnMes", haceUnMes);
+			result.addObject("haceDosMeses", haceDosMeses);
+			final String language = LocaleContextHolder.getLocale().getLanguage();
+			result.addObject("lang", language);
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/application/rookie/list.do");
 		}
 		return result;
 	}
-
-
 
 	@RequestMapping(value = "/company/accept", method = RequestMethod.GET)
 	public ModelAndView accept(@RequestParam final int applicationId) {
@@ -120,10 +144,10 @@ public class ApplicationController extends AbstractController {
 			application = this.applicationService.findOne(applicationId);
 			this.applicationService.acceptApplication(application);
 			this.applicationService.saveCompany(application);
-			int positionId = this.applicationService.getPositionByApplication(applicationId).getId();
-			result = new ModelAndView("redirect:/application/company/list.do?positionId="+positionId);
+			final int positionId = this.applicationService.getPositionByApplication(applicationId).getId();
+			result = new ModelAndView("redirect:/application/company/list.do?positionId=" + positionId);
 			return result;
-		} catch (Throwable oops) {
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/");
 			return result;
 		}
@@ -136,12 +160,12 @@ public class ApplicationController extends AbstractController {
 
 		try {
 			Assert.notNull(applicationId);
-			Position position = this.applicationService.getPositionByApplication(applicationId);
+			final Position position = this.applicationService.getPositionByApplication(applicationId);
 			Assert.isTrue(!position.getIsCancelled());
 			application = this.applicationService.findOne(applicationId);
 			result = this.rejectModelAndView(application);
 			return result;
-		} catch (Throwable oops) {
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/");
 			return result;
 		}
@@ -159,12 +183,12 @@ public class ApplicationController extends AbstractController {
 		} else if (binding.hasErrors()) {
 			result = this.rejectModelAndView(application);
 			return result;
-		} else{
-				int positionId = this.applicationService.getPositionByApplication(application.getId()).getId();
-				this.applicationService.rejectApplication(application);
-				this.applicationService.saveCompany(application);
-				result = new ModelAndView("redirect:/application/company/list.do?positionId="+positionId);
-				return result;
+		} else {
+			final int positionId = this.applicationService.getPositionByApplication(application.getId()).getId();
+			this.applicationService.rejectApplication(application);
+			this.applicationService.saveCompany(application);
+			result = new ModelAndView("redirect:/application/company/list.do?positionId=" + positionId);
+			return result;
 		}
 	}
 
@@ -186,85 +210,90 @@ public class ApplicationController extends AbstractController {
 		return result;
 	}
 
-
 	//PARTE DEL ROOKIE--------------------------------------------------------------------------------------------------
 
 	@RequestMapping(value = "/rookie/create", method = RequestMethod.GET)
-	public ModelAndView create(@RequestParam int positionId){
+	public ModelAndView create(@RequestParam final int positionId) {
 		ModelAndView result;
-		try{
-			Position position = this.positionService.findOne(positionId);
-			Rookie rookie = rookieService.findOne(actorService.getActorLogged().getId());
-			Collection<Application> applications = applicationService.getApplicationsByRookie(rookie);
-			Collection<Application> applicationsPosition = applicationService.getAllApplicationsByPosition(positionId);
+		try {
+			final Position position = this.positionService.findOne(positionId);
+			final Rookie rookie = this.rookieService.findOne(this.actorService.getActorLogged().getId());
+			final Collection<Application> applications = this.applicationService.getApplicationsByRookie(rookie);
+			final Collection<Application> applicationsPosition = this.applicationService.getAllApplicationsByPosition(positionId);
 			Assert.isTrue(!applicationsPosition.contains(applications));
 			Assert.isTrue(!position.getIsCancelled());
-			Actor a = this.actorService.getActorLogged();
-			Rookie h = this.rookieService.findOne(a.getId());
-			Application application = this.applicationService.create();
+			final Actor a = this.actorService.getActorLogged();
+			final Rookie h = this.rookieService.findOne(a.getId());
+			final Application application = this.applicationService.create();
 			result = new ModelAndView("application/rookie/create");
-			result.addObject("application",application);
-			result.addObject("positionId",positionId);
-			result.addObject("curricula",h.getCurricula());
-		}catch(Throwable oops){
+			result.addObject("application", application);
+			result.addObject("positionId", positionId);
+			result.addObject("curricula", h.getCurricula());
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/");
 		}
 		return result;
 	}
 
-	@RequestMapping(value="/rookie/create", method = RequestMethod.POST)
-	public ModelAndView saveCreate(@ModelAttribute("application")Application application,@RequestParam int positionId,BindingResult binding){
+	@RequestMapping(value = "/rookie/create", method = RequestMethod.POST)
+	public ModelAndView saveCreate(@ModelAttribute("application") final Application application, @RequestParam final int positionId, final BindingResult binding) {
 		ModelAndView result;
-		try{
-			this.applicationService.saveRookie(application,positionId);
+		try {
+			this.applicationService.saveRookie(application, positionId);
 			result = new ModelAndView("redirect:/application/rookie/list.do");
-		}catch (Throwable oops){
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/");
 		}
 		return result;
 	}
 
 	@RequestMapping(value = "/rookie/update", method = RequestMethod.GET)
-	public ModelAndView update(@RequestParam int applicationId){
+	public ModelAndView update(@RequestParam final int applicationId) {
 		ModelAndView result;
-		try{
-			Position position = this.applicationService.getPositionByApplication(applicationId);
+		try {
+			final Position position = this.applicationService.getPositionByApplication(applicationId);
 			Assert.isTrue(!position.getIsCancelled());
-			Application a = this.applicationService.findOne(applicationId);
-			Actor ac = this.actorService.getActorLogged();
-			Rookie h = this.rookieService.findOne(ac.getId());
+			final Application a = this.applicationService.findOne(applicationId);
+			final Actor ac = this.actorService.getActorLogged();
+			final Rookie h = this.rookieService.findOne(ac.getId());
 			Assert.isTrue(a.getRookie().equals(h));
 
 			result = new ModelAndView("application/rookie/update");
-			result.addObject("application",a);
-		}catch (Throwable oops){
+			result.addObject("application", a);
+		} catch (final Throwable oops) {
 			result = new ModelAndView("redirect:/");
 		}
 		return result;
 	}
 
 	@RequestMapping(value = "/rookie/update", method = RequestMethod.POST)
-	public ModelAndView saveUpdate(@ModelAttribute("application")Application application,BindingResult binding){
+	public ModelAndView saveUpdate(@ModelAttribute("application") Application application, final BindingResult binding) {
 		ModelAndView result;
-		if(StringUtils.isEmpty(application.getExplanation()) || StringUtils.isEmpty(application.getLink()) ) {
+		if (StringUtils.isEmpty(application.getExplanation()) || StringUtils.isEmpty(application.getLink())) {
 			binding.rejectValue("explanation", "error.explanation");
 			binding.rejectValue("link", "error.link");
 			result = new ModelAndView("application/rookie/update");
-			result.addObject("application",application);
-		}else{
+			result.addObject("application", application);
+		} else
 			try {
 				application = this.applicationService.reconstruct(application, binding);
 				this.applicationService.saveRookieUpdate(application);
 				result = new ModelAndView("redirect:/application/rookie/list.do");
-			}catch (ValidationException v){
+			} catch (final ValidationException v) {
 				result = new ModelAndView("application/rookie/update");
 				result.addObject(application);
-			}catch (Throwable oops){
+			} catch (final Throwable oops) {
 				result = new ModelAndView("application/rookie/update");
-				result.addObject("application",application);
-				result.addObject("message","application.commit.error");
+				result.addObject("application", application);
+				result.addObject("message", "application.commit.error");
 			}
-		}
 		return result;
+	}
+
+	private Date restarMesesFecha(final Date date, final Integer meses) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MONTH, -meses);
+		return calendar.getTime();
 	}
 }
