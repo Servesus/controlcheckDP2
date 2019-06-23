@@ -14,4 +14,7 @@ public interface XXXXXRepository extends JpaRepository<XXXXX, Integer> {
 
 	@Query("select x from XXXXX x where x.application.id=?1")
 	Collection<XXXXX> getXXXXXs(int applicationId);
+
+	@Query("select x from XXXXX x where x.application.id=?1 and x.isFinal = true")
+	Collection<XXXXX> getXXXXXsC(int applicationId);
 }

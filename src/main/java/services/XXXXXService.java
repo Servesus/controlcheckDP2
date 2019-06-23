@@ -116,4 +116,10 @@ public class XXXXXService {
 		return result;
 	}
 
+	public Collection<XXXXX> getXXXXXsC(final int id) {
+		final Collection<XXXXX> result = new ArrayList<XXXXX>();
+		result.addAll(this.repository.getXXXXXsC(id));
+		return result;
+	}
+
 }

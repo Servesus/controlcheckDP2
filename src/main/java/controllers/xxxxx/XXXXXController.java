@@ -55,7 +55,11 @@ public class XXXXXController extends AbstractController {
 			Collection<XXXXX> x;
 			final String language = LocaleContextHolder.getLocale().getLanguage();
 
-			x = this.service.getXXXXXs(applicationId);
+			if (this.rookieService.findOne(this.actorService.getActorLogged().getId()) != null)
+				x = this.service.getXXXXXs(applicationId);
+			else
+				x = this.service.getXXXXXsC(applicationId);
+
 			final Application a = this.applicationService.findOne(applicationId);
 			Assert.isTrue(a.getRookie().equals(this.rookieService.findOne(this.actorService.getActorLogged().getId())) || a.getProblem().getCompany().equals(this.companyService.findOne(this.actorService.getActorLogged().getId())));
 
@@ -196,11 +200,12 @@ public class XXXXXController extends AbstractController {
 			final String language = LocaleContextHolder.getLocale().getLanguage();
 			final SimpleDateFormat formatterEs = new SimpleDateFormat("dd-MM-yy HH:mm");
 			final SimpleDateFormat formatterEn = new SimpleDateFormat("yy-MM-dd HH:mm");
-			String moment;
-			if (language == "es")
-				moment = formatterEs.format(x.getMoment());
-			else
-				moment = formatterEn.format(x.getMoment());
+			String moment = "";
+			if (x.getMoment() != null)
+				if (language == "es")
+					moment = formatterEs.format(x.getMoment());
+				else
+					moment = formatterEn.format(x.getMoment());
 
 			result = new ModelAndView("xxxxx/rookie,company/show");
 			result.addObject("body", x.getBody());

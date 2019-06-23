@@ -24,7 +24,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @Access(AccessType.PROPERTY)
 @Table(indexes = {
-	@Index(columnList = "application")
+	@Index(columnList = "application,isFinal")
 })
 public class XXXXX extends DomainEntity {
 
