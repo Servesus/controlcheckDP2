@@ -134,6 +134,36 @@ public class ApplicationController extends AbstractController {
 		return result;
 	}
 
+	@RequestMapping(value = "/company/show", method = RequestMethod.GET)
+	public ModelAndView showC(@RequestParam final int applicationId) {
+		ModelAndView result;
+		Application application;
+		Actor actor;
+
+		try {
+			Assert.notNull(applicationId);
+			actor = this.actorService.getActorLogged();
+			final Company company = this.companyService.findOne(actor.getId());
+			application = this.applicationService.findOne(applicationId);
+			Assert.isTrue(application.getProblem().getCompany().equals(company));
+			final Position position = this.applicationService.getPositionByApplication(applicationId);
+			result = new ModelAndView("application/company/show");
+			result.addObject("application", application);
+			result.addObject("position", position);
+			final Collection<XXXXX> x = this.xxxxxService.getXXXXXsC(application.getId());
+			final Date haceUnMes = this.restarMesesFecha(new Date(), 1);
+			final Date haceDosMeses = this.restarMesesFecha(new Date(), 2);
+			result.addObject("xxxxx", x);
+			result.addObject("haceUnMes", haceUnMes);
+			result.addObject("haceDosMeses", haceDosMeses);
+			final String language = LocaleContextHolder.getLocale().getLanguage();
+			result.addObject("lang", language);
+		} catch (final Throwable oops) {
+			result = new ModelAndView("redirect:/application/company/list.do");
+		}
+		return result;
+	}
+
 	@RequestMapping(value = "/company/accept", method = RequestMethod.GET)
 	public ModelAndView accept(@RequestParam final int applicationId) {
 		ModelAndView result;
